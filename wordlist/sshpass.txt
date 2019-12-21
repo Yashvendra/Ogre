@@ -1,5 +1,5 @@
-
 111111
+
 123456
 12345678
 1qaz2wsx
@@ -114,6 +114,7 @@ Password2
 permit
 pixmet2003
 powerapp
+postgres
 princess
 private
 P@ssw0rd
@@ -206,6 +207,7 @@ test-sql3
 testtest
 tini
 toor
+tomcat
 trendimsa1.0
 trust
 tslinux
