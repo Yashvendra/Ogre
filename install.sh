@@ -67,6 +67,9 @@ do
 	fi
 done
 clear
+echo -e "${Green}[+] Installing Hyda.."
+sudo apt install hydra
+sleep 0.5
 echo -e "${Green}[~] Installation is finished. Type 'ogre' to launch the tool after we exit."
 sleep 0.5
 echo -en "${Green}[*] Starting ogre"; sleep 0.5 ;echo -en "." ;sleep 0.5 ;echo -en "." ;sleep 0.5 ;echo -en "." ;sleep 0.5 ;echo -en "." ;
