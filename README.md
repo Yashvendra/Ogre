@@ -5,7 +5,7 @@
 <b>OGRE</b> is the ultimate protocol bruteforcer. According to FORBES, 4.1 Billion records were leaked only in the first 6 months of 2019, and still increasing. With a good wordist like<a href="https://github.com/danielmiessler/SecLists"> Seclist</a>, this tool will help you to check those weak credentials for various services. 
 
 ### Prerequisiste
-You should have a <b>linux</b> system with a <b>python</b> version greater than 3. 
+You should have a <b>linux</b> system with a <b>python</b> version equal or greater than 3. 
 
 ### Installation
 Run `install.sh` as sudo
