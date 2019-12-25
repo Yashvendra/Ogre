@@ -43,15 +43,16 @@ def ftp():
     global usercheck
     try:
         host = input(Blue + "[#] Enter Host IP: " + White)
+        port = input(Blue + "[#] Enter Port(default is "+Cyan+"21"+Blue+"): ")
         usercheck = input(Blue + "[#] Would you go with a userlist(U) or a single user name(u)? ["+Cyan+"U"+Blue+"/"+Cyan+"u"+Blue+"]: "+White)
         if usercheck == "U":
             username = input(Blue + "[#] Enter path to User wordlist: "+White)
         elif usercheck == "u":
             username = input(Blue + "[#] Enter Username to use: " + White)
         wordlist = input(Blue + "[#] Enter path to Password wordlist(e.g. "+ Blue + "'" + Cyan + "wordlist/sshpass.txt" + Blue + "'): " + White)
-        threads = input(Blue + "[#] Enter the no. of Threads to use(default is" + Cyan +"16" + Blue + "): "+ White)
+        threads = input(Blue + "[#] Enter the no. of Threads to use(default is " + Cyan +"16" + Blue + "): "+ White)
         print("\n")
-        ftpConnect(host, username, wordlist, threads)
+        ftpConnect(host, port, username, wordlist, threads)
     except KeyboardInterrupt:
         print(Green + "\n" + "[~] Shutting down..." + NC)
         raise SystemExit
@@ -65,6 +66,7 @@ def ssh():
     global usercheck
     try:
         host = input(Blue + "[#] Enter Host IP: " + White)
+        port = input(Blue + "[#] Enter Port(default is "+Cyan+"22"+Blue+"): ")
         usercheck = input(Blue + "[#] Would you go with a userlist(U) or a single user name(u)? ["+Cyan+"U"+Blue+"/"+Cyan+"u"+Blue+"]: "+White)
         if usercheck == "U":
             username = input(Blue + "[#] Enter path to User wordlist: "+White)
@@ -74,7 +76,7 @@ def ssh():
         threads = input(Blue + "[#] Enter the no. of Threads to use(default is "+Cyan+ "16"+Blue+"): "+ White)
         #print(Magenta + "-------------------------------------" + NC)
         print("\n")
-        sshConnect(host, username, wordlist, threads)
+        sshConnect(host, port, username, wordlist, threads)
     except KeyboardInterrupt:
         print(Green + "\n" + "[~] Shutting down..." + NC)
         raise SystemExit
@@ -89,6 +91,7 @@ def telnet():
     global usercheck
     try:
         host = input(Blue + "[#] Enter Host IP: " + White)
+        port = input(Blue + "[#] Enter Port(default is "+Cyan+"23"+Blue+"): ")
         usercheck = input(Blue + "[#] Would you go with a userlist(U) or a single user name(u)? ["+Cyan+"U"+Blue+"/"+Cyan+"u"+Blue+"]: "+White)
         if usercheck == "U":
             username = input(Blue + "[#] Enter path to User wordlist: "+White)
@@ -97,7 +100,7 @@ def telnet():
         wordlist = input(Blue + "[#] Enter path to Password wordlist(e.g. "+ Blue + "'" + Cyan + "wordlist/sshpass.txt" + Blue + "'): " + White)
         threads = input(Blue + "[#] Enter the no. of Threads to use(default is "+ Cyan +"16" + Blue +"): "+ White)
         print("\n")
-        telnetConnect(host, username, wordlist, threads)
+        telnetConnect(host, port, username, wordlist, threads)
     except KeyboardInterrupt:
         print(Green + "\n" + "[~] Shutting down..." + NC)
         raise SystemExit
@@ -111,6 +114,7 @@ def postgresql():
     global usercheck
     try:
         host = input(Blue + "[#] Enter Host IP: " + White)
+        port = input(Blue + "[#] Enter Port(default is "+Cyan+"5432"+Blue+"): ")
         usercheck = input(Blue + "[#] Would you go with a userlist(U) or a single user name(u)? ["+Cyan+"U"+Blue+"/"+Cyan+"u"+Blue+"]: "+White)
         if usercheck == "U":
             username = input(Blue + "[#] Enter path to User wordlist: "+White)
@@ -119,7 +123,7 @@ def postgresql():
         wordlist = input(Blue + "[#] Enter path to Password wordlist(e.g. "+ Blue + "'" + Cyan + "wordlist/sshpass.txt" + Blue +"'): " +White)
         threads = input(Blue + "[#] Enter the no. of Threads to use(default is "+ Cyan +"16"+ Blue +"): "+ White)
         print("\n")
-        postgresqlConnect(host, username, wordlist, threads)
+        postgresqlConnect(host, port, username, wordlist, threads)
     except KeyboardInterrupt:
         print(Green + "\n" + "[~] Shutting down..." + NC)
         raise SystemExit
@@ -132,10 +136,11 @@ def postgresql():
 def vnc():
     try:
         host = input(Blue + "[#] Enter Host IP: " + White)
+        port = input(Blue + "[#] Enter Port(default is "+Cyan+"5900"+Blue+"): ")
         wordlist = input(Blue + "[#] Enter path to Password wordlist(e.g. "+ Blue + "'" + Cyan + "wordlist/sshpass.txt" + Blue + "'): " + White)
         threads = input(Blue + "[#] Enter the no. of Threads to use(default is "+Cyan+"16"+Blue+"): "+ White)
         print("\n")
-        vncConnect(host, wordlist, threads)
+        vncConnect(host, port, wordlist, threads)
     except KeyboardInterrupt:
         print(Green + "\n" + "[~] Shutting down..." + NC)
         raise SystemExit
@@ -145,12 +150,14 @@ def vnc():
         print("\n" + NC)
         exit()
 
-def sshConnect(host, username, wordlist, threads):
+def sshConnect(host, port, username, wordlist, threads):
     try:
         if host == "":
             print(Red + "[!] Please provide a vaild Host")
             print(Green + "[#] Exiting...")
             raise SystemExit
+        if port == "":
+            port = "22"
         if not path.exists(wordlist):
             print(Red + "[!] Please provide a vaild Password Wordlist")
             print(Green + "[#] Exiting...")
@@ -164,16 +171,16 @@ def sshConnect(host, username, wordlist, threads):
             print(Green + "[#] Exiting...")
             raise SystemExit
         if threads == "":
-            threads = 16
+            threads = "16"
         flag = 0
         print(Green + "[+] Bruteforcing ssh... " + LWhite
               )
         if usercheck == "U":
-            p1 = subprocess.Popen(['hydra', '-L', username, '-P', wordlist,
+            p1 = subprocess.Popen(['hydra', '-s', port,'-L', username, '-P', wordlist,
                                    host, 'ssh', '-t', threads, '-I','-e','ns','-V'], stdout=PIPE,
                                   stderr=PIPE)
         else:
-            p1 = subprocess.Popen(['hydra', '-l', username, '-P', wordlist, host,
+            p1 = subprocess.Popen(['hydra', '-s', port, '-l', username, '-P', wordlist, host,
                                    'ssh', '-t', threads, '-I', '-e', 'ns', '-V'], stdout=PIPE,
                                   stderr=PIPE)
         for line in iter(p1.stdout.readline, b''):
@@ -192,12 +199,14 @@ def sshConnect(host, username, wordlist, threads):
     except Exception as exc:
         print("[!] Error : %s " % exc)
 
-def ftpConnect(host, username, wordlist, threads):
+def ftpConnect(host, port, username, wordlist, threads):
     try:
         if host == "":
             print(Red + "[!] Please provide a vaild Host")
             print(Green + "[#] Exiting...")
             raise SystemExit
+        if port == "":
+            port = "21"
         if not path.exists(wordlist):
             print(Red + "[!] Please provide a vaild Password Wordlist")
             print(Green + "[#] Exiting...")
@@ -208,15 +217,15 @@ def ftpConnect(host, username, wordlist, threads):
                 print(Green + "[#] Exiting...")
                 raise SystemExit
         if threads == "":
-            threads = 16
+            threads = "16"
 
         flag = 0
         print(Green + "[+] Bruteforcing FTP..." + LWhite)
         if usercheck == "U":
-            p1 = subprocess.Popen(['hydra', '-L', username, '-P', wordlist, host, 'ftp','-t', threads, '-I', '-e', 'ns', '-V'],
+            p1 = subprocess.Popen(['hydra', "-s", port,'-L', username, '-P', wordlist, host, 'ftp','-t', threads, '-I', '-e', 'ns', '-V'],
                                   stdout=PIPE, stderr=PIPE)
         else:
-            p1 = subprocess.Popen(['hydra', '-l', username, '-P', wordlist, host,
+            p1 = subprocess.Popen(['hydra', "-s", port, '-l', username, '-P', wordlist, host,
                                    'ftp', '-t', threads, '-I', '-e', 'ns', '-V'], stdout=PIPE,
                                   stderr=PIPE)
         for line in iter(p1.stdout.readline, b''):
@@ -235,12 +244,14 @@ def ftpConnect(host, username, wordlist, threads):
     except Exception as exc:
         print("[!] Error : %s " % exc)
 
-def telnetConnect(host, username, wordlist, threads):
+def telnetConnect(host, port, username, wordlist, threads):
     try:
         if host == "":
             print(Red + "[!] Please provide a vaild Host")
             print(Green + "[#] Exiting...")
             raise SystemExit
+        if port == "":
+            port = "23"
         if not path.exists(wordlist):
             print(Red + "[!] Please provide a vaild Password Wordlist")
             print(Green + "[#] Exiting...")
@@ -251,15 +262,15 @@ def telnetConnect(host, username, wordlist, threads):
                 print(Green + "[#] Exiting...")
                 raise SystemExit
         if threads == "":
-            threads = 16
+            threads = "16"
 
         flag = 0
         print(Green + "[+] Bruteforcing Telnet..." + LWhite)
         if usercheck == "U":
-            p1 = subprocess.Popen(['hydra', '-L', username, '-P', wordlist, host, 'telnet','-t', threads, '-I', '-e', 'ns', '-V'],
+            p1 = subprocess.Popen(['hydra', '-s', port,'-L', username, '-P', wordlist, host, 'telnet','-t', threads, '-I', '-e', 'ns', '-V'],
                                   stdout=PIPE, stderr=PIPE)
         else:
-            p1 = subprocess.Popen(['hydra', '-l', username, '-P', wordlist, host,
+            p1 = subprocess.Popen(['hydra', '-s', port, '-l', username, '-P', wordlist, host,
                                    'telnet', '-t', threads, '-I', '-e', 'ns', '-V'], stdout=PIPE,
                                   stderr=PIPE)
         for line in iter(p1.stdout.readline, b''):
@@ -278,12 +289,14 @@ def telnetConnect(host, username, wordlist, threads):
     except Exception as exc:
         print("[!] Error : %s " % exc)
 
-def postgresqlConnect(host, username, wordlist, threads):
+def postgresqlConnect(host, port, username, wordlist, threads):
     try:
         if host == "":
             print(Red + "[!] Please provide a vaild Host")
             print(Green + "[#] Exiting...")
             raise SystemExit
+        if port == "":
+            port = "5432"
         if not path.exists(wordlist):
             print(Red + "[!] Please provide a vaild Password Wordlist")
             print(Green + "[#] Exiting...")
@@ -294,15 +307,15 @@ def postgresqlConnect(host, username, wordlist, threads):
                 print(Green + "[#] Exiting...")
                 raise SystemExit
         if threads == "":
-            threads = 16
+            threads = "16"
 
         flag = 0
         print(Green + "[+] Bruteforcing PostgreSQL..." + LWhite)
         if usercheck == "U":
-            p1 = subprocess.Popen(['hydra', '-L', username, '-P', wordlist, host, 'postgres','-t', threads, '-I', '-e', 'ns', '-V'],
+            p1 = subprocess.Popen(['hydra', '-s', port, '-L', username, '-P', wordlist, host, 'postgres','-t', threads, '-I', '-e', 'ns', '-V'],
                                   stdout=PIPE, stderr=PIPE)
         else:
-            p1 = subprocess.Popen(['hydra', '-l', username, '-P', wordlist, host,
+            p1 = subprocess.Popen(['hydra', '-s', port,'-l', username, '-P', wordlist, host,
                                    'postgres', '-t', threads, '-I', '-e', 'ns', '-V'], stdout=PIPE,
                                   stderr=PIPE)
         for line in iter(p1.stdout.readline, b''):
@@ -321,22 +334,24 @@ def postgresqlConnect(host, username, wordlist, threads):
     except Exception as exc:
         print("[!] Error : %s " % exc)
 
-def vncConnect(host, wordlist, threads):
+def vncConnect(host, port, wordlist, threads):
     try:
         if host == "":
             print(Red + "[!] Please provide a vaild Host")
             print(Green + "[#] Exiting...")
             raise SystemExit
+        if port == "":
+            port = "5900"
         if not path.exists(wordlist):
             print(Red + "[!] Please provide a vaild Wordlist")
             print(Green + "[#] Exiting...")
             raise SystemExit
         if threads == "":
-            threads = 16
+            threads = "16"
 
         flag = 0
         print(Green + "[+] BruteForcing VNC..." + LWhite)
-        p1 = subprocess.Popen(['hydra', '-s' , '5900', '-P', wordlist, host,
+        p1 = subprocess.Popen(['hydra', '-s' , port, '-P', wordlist, host,
                                      'vnc', '-t', threads, '-V'], stdout=PIPE,
                                     stderr=PIPE)
         for line in iter(p1.stdout.readline, b''):
